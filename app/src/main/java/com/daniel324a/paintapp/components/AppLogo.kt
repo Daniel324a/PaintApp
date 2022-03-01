@@ -30,9 +30,7 @@ fun AppLogo() {
             "App Logo",
             modifier = Modifier
                 .size(128.dp)
-                .clip(
-                    CircleShape
-                )
+                .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
@@ -48,7 +46,7 @@ fun AppLogo() {
 @Preview()
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-private fun previewAppLogo() {
+private fun PreviewAppLogo() {
     PaintAppTheme {
         AppLogo()
     }

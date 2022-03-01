@@ -21,7 +21,8 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,6 +44,9 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 }
 
 dependencies {
@@ -62,5 +66,7 @@ dependencies {
     // Added Dependencies
     implementation "androidx.navigation:navigation-compose:2.4.1"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
+    implementation 'com.godaddy.android.colorpicker:compose-color-picker-android:0.4.2'
+    implementation "com.google.accompanist:accompanist-flowlayout:0.24.3-alpha"
 
 }
