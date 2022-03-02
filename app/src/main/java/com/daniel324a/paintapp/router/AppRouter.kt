@@ -23,7 +23,7 @@ fun AppRouter() {
 
 
     // Routes
-    NavHost(navController = navController, startDestination = "/home") {
+    NavHost(navController = navController, startDestination = "/paint") {
         composable("/home") {
             HomeView(navController)
         }

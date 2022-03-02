@@ -14,6 +14,7 @@ import com.daniel324a.paintapp.components.PaintAppBar
 import com.daniel324a.paintapp.components.PaintBottomSheet
 import com.daniel324a.paintapp.components.Paintable
 import com.daniel324a.paintapp.components.ToggleVisibility
+import com.daniel324a.paintapp.models.LocalPaintProvider
 import com.daniel324a.paintapp.models.PaintProvider
 import com.daniel324a.paintapp.utils.ShareUtils
 import com.daniel324a.paintapp.utils.captureBitmap
@@ -24,14 +25,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PaintView(navController: NavController) {
-
-    // Clear Layout
-    val systemUiController = rememberSystemUiController()
-    systemUiController.setSystemBarsColor(
-        color = Color.White
-    )
-
     // Logic
+    /*
+
     val state = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
 
@@ -48,14 +44,23 @@ fun PaintView(navController: NavController) {
             state.snackbarHostState.showSnackbar(it, "Close", SnackbarDuration.Short)
         }
     }
-
-    val expanded: Boolean = when (state.bottomSheetState.isExpanded) {
-        true -> !state.bottomSheetState.isAnimationRunning
-        false -> state.bottomSheetState.isAnimationRunning
-    }
+     */
 
     //Layout
     PaintProvider {
+        val (provider) = LocalPaintProvider.current
+        val state = provider.bottomSheetScaffoldState.bottomSheetState
+
+        val expanded: Boolean = when (state.isExpanded) {
+            true -> !state.isAnimationRunning
+            false -> state.isAnimationRunning
+        }
+
+        // Clear Layout
+        val systemUiController = rememberSystemUiController()
+        systemUiController.setSystemBarsColor(
+            color = provider.canvasColor
+        )
 
         // Share Paintable Extra Logic
         val context = LocalContext.current
@@ -63,7 +68,7 @@ fun PaintView(navController: NavController) {
             Paintable(Color.White)
         }
 
-        fun shareCanvas() {
+        val shareCanvas: () -> Unit = {
             MainScope().launch {
                 // Generate Bitmap from Paintable Composable
                 val bitmap = snapShot.invoke()
@@ -78,22 +83,13 @@ fun PaintView(navController: NavController) {
         }
 
         BottomSheetScaffold(
-            scaffoldState = state,
-            backgroundColor = Color.White,
-            sheetBackgroundColor = Color.White,
+            scaffoldState = provider.bottomSheetScaffoldState,
+            backgroundColor = provider.canvasColor,
+            sheetBackgroundColor = provider.canvasColor,
             sheetShape = RoundedCornerShape(topStart = 35.dp, topEnd = 35.dp),
             sheetPeekHeight = 0.dp,
-            topBar = {
-                PaintAppBar(
-                    navController,
-                    "Canvas",
-                    { toggleSheet() },
-                    expanded,
-                    { shareCanvas() },
-                    displaySnackBar
-                )
-            },
-            sheetContent = { PaintBottomSheet() },
+            topBar = { PaintAppBar(navController, "Canvas", expanded) },
+            sheetContent = { PaintBottomSheet(shareCanvas) },
             snackbarHost = {
                 SnackbarHost(it) { data ->
                     Snackbar(
@@ -107,10 +103,7 @@ fun PaintView(navController: NavController) {
                 }
             },
             content = {
-                ToggleVisibility(
-                    content = { Paintable() },
-                    show = !expanded
-                )
+                ToggleVisibility(content = { Paintable() }, !expanded)
             }
         )
     }

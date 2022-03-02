@@ -11,10 +11,14 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.daniel324a.paintapp.models.LocalPaintProvider
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ToggleVisibility(content: @Composable () -> Unit, show: Boolean = true) {
+
+    val isDark = LocalPaintProvider.current.value.isDark()
+
     Box {
         AnimatedVisibility(
             visible = !show,
@@ -26,7 +30,7 @@ fun ToggleVisibility(content: @Composable () -> Unit, show: Boolean = true) {
             content = {
                 Surface(
                     content = { },
-                    color = Color.Black.copy(alpha = 0.1f),
+                    color = Color.Black.copy(alpha = if (isDark) 0.5f else 0.1f),
                     modifier = Modifier.fillMaxSize()
                 )
             },

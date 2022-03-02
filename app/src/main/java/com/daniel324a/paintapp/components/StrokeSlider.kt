@@ -11,6 +11,8 @@ fun StrokeSlider() {
     val (provider, update) = LocalPaintProvider.current
     var sliderPosition by remember { mutableStateOf(provider.strokeWidth) }
 
+    val trackColor = if (provider.isDark()) Color.DarkGray else Color.Gray
+
     Slider(
         value = sliderPosition,
         onValueChange = { sliderPosition = it },
@@ -19,7 +21,7 @@ fun StrokeSlider() {
         steps = 5,
         colors = SliderDefaults.colors(
             thumbColor = provider.color,
-            activeTrackColor = Color.Gray,
+            activeTrackColor = trackColor,
         )
     )
 
